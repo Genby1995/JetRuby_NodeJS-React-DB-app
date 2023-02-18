@@ -5,6 +5,7 @@ const router = new Router();
 
 router.get("/trending", dataController.getAll);
 router.get("/tranding/:id", dataController.getOneId);
-router.put("/data", dataController.updateData);
+router.put("/update", dataController.updateData);
+router.post("/addrepo", dataController.addData);
 
 export default router;

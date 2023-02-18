@@ -1,22 +1,24 @@
+import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import router from "./router/router.js";
-import storeConstructor from "./changeable_settings/storeConstructor.js";
+import cors from "cors";
+import configConstructor from "./config/configConstructor.js";
+import error_middleware from "./middlewares/error_middleware.js";
+import bodyParser from "body-parser";
+import dataService from "./service/data_service.js";
+
+dotenv.config();
 
 const PORT = process.env.PORT || 8000;
-const MONGO_URL =
-    process.env.MONGO_URL ||
-    "mongodb+srv://Genby1995:Genby1995@genby1995.xj9l6du.mongodb.net/jetruby";
+const MONGO_URL = process.env.MONGO_URL;
 const app = express();
 
-export let timerSettings = await storeConstructor.getData();
-storeConstructor.updateData(timerSettings);
-export let timerId = null;
-
+app.use(cors({ origin: "*" }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/api", router);
-app.listen(PORT, () => {
-    console.log("Server has been started!");
-});
+app.use(error_middleware);
 
 async function start() {
     try {
@@ -26,20 +28,42 @@ async function start() {
             {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
+                dbName: "jetruby",
             },
             () => {
                 console.log("Connected to MongoDB!");
+                startTimer();
             }
         );
+        app.listen(PORT, () => {
+            console.log(`Server has been started on PORT:${PORT}!`);
+        });
     } catch (e) {
         console.log("Error with MongoDB connection:" + e);
     }
 }
 
-const tick = () => {
-    console.log("Tick");
-    return (timerId = setTimeout(tick, timerSettings.timerPeriod || 10));
+//Timer logic
+export let timer = null;
+
+export const startTimer = async () => {
+    try {
+        let config = await configConstructor.getConfig();
+        dataService.updateData(
+            config.repoMaxAge,
+            config.timerPeriod,
+            config.repoCount,
+            false
+        );
+        console.log(config);
+        return (timer = setTimeout(
+            startTimer,
+            config.timerPeriod || 1000 * 60
+        ));
+    } catch (error) {
+        console.log("Error with updating data:" + error);
+        return (timer = setTimeout(startTimer, 1000));
+    }
 };
 
 start();
-tick();
