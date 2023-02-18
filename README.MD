@@ -1,6 +1,6 @@
 # JetRuby API
 
-https://friend-lee.onrender.com/ - hosting deployment.
+https://jetruby-api.onrender.com/ - hosting deployment.
 
 ## Installation and exploitation:
 
