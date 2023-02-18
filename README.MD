@@ -2,7 +2,7 @@
 
 https://jetruby.onrender.com/ - hosting deployment.
 
-## Installation and exploitation:
+## Installation and expluatation:
 
 <b style="color: yellow"> Development:</b> <b>"npm run dev"</b> or <b>"npm run start"</b> (for hot refresh).
 
@@ -12,6 +12,18 @@ https://jetruby.onrender.com/ - hosting deployment.
 <b style="color: red">Note:</b> To use with other UI change of environment variables <b>.ENV {PORT=..., MONGO_URL = "mongodb+srv://...", CLIENT_URLS = "http://localhost:3000, https://.../, https://.../"}</b> is needed.
 
 ## About
+
+## Choice of DB
+
+In our case, we need to quickly assemble a database in which there is one data array without references.
+
+Choise was between MySQL, PostgreSQL and MongoDB:
+
+-   MySQL - easy to build and configure, works well with a small amount of data.
+-   PostgreSQL is more difficult to configure than MySQL, suitable for a highly scalable project.
+-   MongoDB has simple setup and good performance if no references needed.
+
+Summing up, MySQL and MongoDB are most suited for solving the task, but as MySQL is sensitive to server instability and the tast doesn't need references, MongoDB is accepted. The decision is good enougth while we don't references while scaling the project.
 
 <p>
 
