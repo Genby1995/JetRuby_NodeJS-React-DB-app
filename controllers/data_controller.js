@@ -5,7 +5,8 @@ class DataController {
         try {
             const data = await dataService.getAll();
             return res.status(200).json({
-                message: "SUCSESS: Last trending repositories from DB are sent",
+                message:
+                    "success - Last trending repositories from DB recieved",
                 data: data,
             });
         } catch (e) {
@@ -18,7 +19,7 @@ class DataController {
         try {
             const data = await dataService.getOneId(repoId);
             return res.status(200).json({
-                message: "SUCSESS: Repository with given ID from DB is sent",
+                message: "success - Repository with given ID from DB recieved",
                 data: data,
             });
         } catch (e) {
@@ -37,8 +38,20 @@ class DataController {
             );
             return res.status(200).json({
                 message:
-                    "SUCSESS: Last trending repositories from GitHub are sent",
+                    "success - Last trending repositories from GitHub recieved",
                 data: data,
+            });
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async getConfig(req, res, next) {
+        try {
+            const config = await dataService.getConfig();
+            return res.status(200).json({
+                message: "success - Actual server config recieved",
+                config: config,
             });
         } catch (e) {
             next(e);

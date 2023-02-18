@@ -7,17 +7,28 @@ import { startTimer, timer } from "../index.js";
 
 class DataService {
     async getAll() {
-        const data = await RepoModel.find();
+        let data = await RepoModel.find();
         if (!data || data.length < 1) {
-            throw ApiError.NotFound("Data not found in DB");
+            throw ApiError.NotFound("error - Data is not found in DB");
         }
+        data.sort((a, b) => +b.stargazers_count - +a.stargazers_count);
         return data;
+    }
+
+    async getConfig(repoId) {
+        const config = await configConstructor.getConfig();
+        if (!config) {
+            throw ApiError.NotFound("error - Config is not found on server");
+        }
+        return config;
     }
 
     async getOneId(repoId) {
         const data = await RepoModel.findOne({ repoId: repoId });
         if (!data) {
-            throw ApiError.NotFound("Data about this ID not found in DB");
+            throw ApiError.NotFound(
+                "error - Data about this ID is not found in DB"
+            );
         }
         return data;
     }
@@ -30,7 +41,7 @@ class DataService {
                 repoCount,
             });
             clearInterval(timer);
-            startTimer();
+            startTimer("isForced");
         }
         let repoMaxAgeStr = moment(new Date(new Date() - repoMaxAge)).format(
             "YYYY-MM-DD"
@@ -46,8 +57,8 @@ class DataService {
             )
             .then((res) => {
                 if (!res?.data?.items) {
-                    if (!isForced) return "No data on GitHub";
-                    throw ApiError.GITProblem("No data on GitHub");
+                    if (!isForced) return "error - No data on GitHub";
+                    throw ApiError.GITProblem("error - No data on GitHub");
                 }
                 const addResult = res.data.items.map((item) => {
                     return {
@@ -63,11 +74,11 @@ class DataService {
                 if (err?.response?.status === 403) {
                     if (!isForced)
                         return console.log(
-                            "GitHub API complains about too many requests. Waiting or increasing of update period is neaded:" +
+                            "error - GitHub API complains about too many requests. Waiting or increasing of update period is neaded:" +
                                 err?.response?.data?.message
                         );
                     throw ApiError.GitProblem(
-                        "GitHub API complains about too many requests. Waiting or increasing of update period is neaded: " +
+                        "error - GitHub API complains about too many requests. Waiting or increasing of update period is neaded: " +
                             err?.response?.data?.message
                     );
                 }
@@ -77,18 +88,18 @@ class DataService {
                         err?.response?.data?.message
                     );
                 throw ApiError.GitProblem(
-                    "Problem with GitHub request: " +
+                    "error - Problem with GitHub request: " +
                         err?.response?.data?.message
                 );
             });
 
         if (gitdata || gitdata?.length > 1) {
             await RepoModel.deleteMany({});
-            let result = await RepoModel.create([...gitdata]);
+            let result = await RepoModel.create(gitdata);
             return result;
         } else {
             if (!isForced) return;
-            throw ApiError.GitProblem("No data on GitHub");
+            throw ApiError.GitProblem("error - No data on GitHub");
         }
     }
 }

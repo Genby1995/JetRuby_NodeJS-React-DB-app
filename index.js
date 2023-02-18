@@ -45,16 +45,18 @@ async function start() {
 
 //Timer logic
 export let timer = null;
-export const startTimer = async () => {
+export const startTimer = async (isForsed) => {
     try {
         let config = await configConstructor.getConfig();
-        dataService.updateData(
-            config.repoMaxAge,
-            config.timerPeriod,
-            config.repoCount,
-            false
-        );
-        console.log(config);
+        if (!isForsed) {
+            dataService.updateData(
+                config.repoMaxAge,
+                config.timerPeriod,
+                config.repoCount,
+                false
+            );
+        }
+        console.log("DB data refreshed with settings:", config);
         return (timer = setTimeout(
             startTimer,
             config.timerPeriod || 1000 * 60
