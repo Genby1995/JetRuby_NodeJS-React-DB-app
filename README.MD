@@ -13,14 +13,20 @@ https://jetruby.onrender.com/ - hosting deployment.
 
 ## About
 
+### Features:
+
+-   Periodic DB synchronization with GitHub is realized with a simple recursive SetTimeout().
+-   server config is stored in JSON, which is created with the start of the application and is edited with API and UI.
+-   error middleware for async actions on server is implemented.
+
 ### API
 
 API_URL = https://jetruby.onrender.com/api:
 
--   GET API_URL/trending - returns an array with recordings from the database.
--   GET API_URL/trending/:id - returns an object with recordings from the database with ID from request parameters.
--   GET API_URL/config - returns an object with actual server config.
--   PUT API_URL/update - takes an object { repoMaxAge, timerPeriod, repoCount } and returns an array with recordings from the database, synchronized with the GitHub API.
+-   <b>GET API_URL/trending</b> - returns an array with recordings from the database.
+-   <b>GET API_URL/trending/:id</b> - returns an object with recordings from the database with ID from request parameters.
+-   <b>GET API_URL/config</b> - returns an object with actual server config.
+-   <b>PUT API_URL/update</b> - takes an object { repoMaxAge, timerPeriod, repoCount } and returns an array with recordings from the database, synchronized with the GitHub API.
 
 ### Choice of Data Base
 
