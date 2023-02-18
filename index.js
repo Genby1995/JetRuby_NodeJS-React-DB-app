@@ -45,7 +45,6 @@ async function start() {
 
 //Timer logic
 export let timer = null;
-
 export const startTimer = async () => {
     try {
         let config = await configConstructor.getConfig();
@@ -62,7 +61,7 @@ export const startTimer = async () => {
         ));
     } catch (error) {
         console.log("Error with updating data:" + error);
-        return (timer = setTimeout(startTimer, 1000));
+        return (timer = setTimeout(startTimer, 5000));
     }
 };
 

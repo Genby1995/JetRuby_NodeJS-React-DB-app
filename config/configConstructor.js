@@ -11,7 +11,7 @@ class ConfigConstructor {
         } catch (err) {
             fs.writeFileSync(
                 this.filename,
-                '{"timerPeriod": 10000, "repoCount": 10, "repoMaxAge": 86400000}'
+                '{"timerPeriod": 20000, "repoCount": 10, "repoMaxAge": 86400000}'
             );
         }
     }

@@ -22,21 +22,6 @@ class DataService {
         return data;
     }
 
-    async addData(repoId, full_name, html_url, stargazers_count) {
-        if (!repoId || !full_name || !html_url || !stargazers_count) {
-            throw ApiError.NotFound("Data not found in DB");
-        }
-        const repo = await RepoModel.create({
-            repoId: repoId,
-            full_name: full_name,
-            html_url: html_url,
-            stargazers_count: stargazers_count,
-        });
-        const repoJSON = JSON.stringify(repo);
-        const repoData = JSON.parse(repoJSON);
-        return repoData;
-    }
-
     async updateData(repoMaxAge, timerPeriod, repoCount, isForced) {
         if (isForced) {
             await configConstructor.updateConfig({
@@ -75,7 +60,22 @@ class DataService {
                 return addResult;
             })
             .catch((err) => {
-                if (!isForced) return console.log(err?.response?.data?.message);
+                if (err?.response?.status === 403) {
+                    if (!isForced)
+                        return console.log(
+                            "GitHub API complains about too many requests. Waiting or increasing of update period is neaded:" +
+                                err?.response?.data?.message
+                        );
+                    throw ApiError.GitProblem(
+                        "GitHub API complains about too many requests. Waiting or increasing of update period is neaded: " +
+                            err?.response?.data?.message
+                    );
+                }
+                if (!isForced)
+                    return console.log(
+                        err?.response?.status,
+                        err?.response?.data?.message
+                    );
                 throw ApiError.GitProblem(
                     "Problem with GitHub request: " +
                         err?.response?.data?.message
