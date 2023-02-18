@@ -13,7 +13,16 @@ https://jetruby.onrender.com/ - hosting deployment.
 
 ## About
 
-## Choice of DB
+### API
+
+API_URL = https://jetruby.onrender.com/api:
+
+-   GET API_URL/trending - returns an array with recordings from the database.
+-   GET API_URL/trending/:id - returns an object with recordings from the database with ID from request parameters.
+-   GET API_URL/config - returns an object with actual server config.
+-   PUT API_URL/update - takes an object { repoMaxAge, timerPeriod, repoCount } and returns an array with recordings from the database, synchronized with the GitHub API.
+
+### Choice of Data Base
 
 In our case, we need to quickly assemble a database in which there is one data array without references.
 
